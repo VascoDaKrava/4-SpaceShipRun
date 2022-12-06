@@ -1,11 +1,18 @@
 Shader "Custom/UnlitTextureCurve"
 {
+    Properties
+    {
+        _curvePower("Curve Power", Float) = 10.0
+    }
+
     SubShader{
         Pass {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
             #include "UnityCG.cginc"
+
+            float _curvePower;
 
             // vertex input: position, UV
             struct appdata {
@@ -19,8 +26,10 @@ Shader "Custom/UnlitTextureCurve"
             };
 
             // Vertex
-            v2f vert(appdata v) {
+            v2f vert(appdata_full v) {
                 v2f o;
+                v.vertex.y = -_curvePower * (0.5 - v.texcoord.x) * (0.5 - v.texcoord.x);
+                //v.vertex.xyz += 5 * sin(v.normal * v.texcoord.x);
                 o.pos = UnityObjectToClipPos(v.vertex);
                 o.uv = float4(v.texcoord.xy, 0, 0);
                 return o;
