@@ -71,6 +71,7 @@ namespace SpaceShipRun.Mechanics
 
             _currentDistance = Mathf.Lerp(_currentDistance, _desiredDistance, Time.deltaTime * 20.0f);
             Vector3 lookPosition = _focusPoint - lookDirection * _currentDistance;
+
             transform.SetPositionAndRotation(lookPosition, lookRotation);
         }
 
