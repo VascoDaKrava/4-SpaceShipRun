@@ -40,7 +40,7 @@ namespace SpaceShipRun.Mechanics
         private float _currentDistance;
         private float _desiredDistance;
         private Camera _regularCamera;
-        private PlayerLabel _playerLabel;
+        //private PlayerLabel _playerLabel;
 
         public void Initiate(Transform cameraAttach)
         {

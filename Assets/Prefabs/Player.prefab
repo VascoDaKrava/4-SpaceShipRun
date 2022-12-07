@@ -82,6 +82,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cameraAttach: {fileID: 0}
+  _playerName: 
 --- !u!114 &8588504665582526011
 MonoBehaviour:
   m_ObjectHideFlags: 0
