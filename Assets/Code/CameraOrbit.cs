@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SpaceShipRun.Mechanics
 {
     [Obsolete]
-    public class CameraOrbit : MonoBehaviour
+    public sealed class CameraOrbit : MonoBehaviour
     {
         public Vector3 LookPosition { get; private set; }
         public int LookAngle => _lookAngle;
