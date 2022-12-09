@@ -8,13 +8,21 @@ namespace SpaceShipRun.CustomRenderPipeline
     public sealed class CameraRenderer
     {
         private const string BUFFER_NAME = "Camera Render";
-        private /*readonly*/ CommandBuffer _commandBuffer = new CommandBuffer { name = BUFFER_NAME };
+        private CommandBuffer _commandBuffer = new CommandBuffer { name = BUFFER_NAME };
 
         private ScriptableRenderContext _context;
         private Camera _camera;
         private CullingResults _cullingResult;
 
-        private static readonly List<ShaderTagId> drawingShaderTagIds = new List<ShaderTagId> { new ShaderTagId("SRPDefaultUnlit"), };
+        private static readonly List<ShaderTagId> _drawingShaderTagIds =
+            new List<ShaderTagId> {
+                new ShaderTagId("SRPDefaultUnlit"),
+                //new ShaderTagId("SRPDefaultLit"),
+                //new ShaderTagId("SRPDefaultLit"),
+                //new ShaderTagId("URPDefaultLit"),
+                //new ShaderTagId("PlanetShader"),
+                //new ShaderTagId("MyShaderBlaBlaUnlit"),
+            };
 
         public void Render(ScriptableRenderContext context, Camera camera)
         {
@@ -33,6 +41,14 @@ namespace SpaceShipRun.CustomRenderPipeline
             Submit();
         }
 
+        private void RenderGUI()
+        {
+            if (_camera.cameraType == CameraType.SceneView)
+            {
+                ScriptableRenderContext.EmitWorldGeometryForSceneView(_camera);
+            }
+        }
+
         private void Settings(ScriptableCullingParameters parameters)
         {
             //_commandBuffer = new CommandBuffer { name = _camera.name };
@@ -40,7 +56,6 @@ namespace SpaceShipRun.CustomRenderPipeline
             _context.SetupCameraProperties(_camera);
             _commandBuffer.ClearRenderTarget(true, true, Color.clear);
             _commandBuffer.BeginSample(BUFFER_NAME);
-            //_commandBuffer.SetGlobalColor("_GlobalColor", Color.blue);
             ExecuteCommandBuffer();
         }
 
@@ -81,7 +96,7 @@ namespace SpaceShipRun.CustomRenderPipeline
 
         private void DrawVisible()
         {
-            var drawingSettings = CreateDrawingSettings(drawingShaderTagIds, SortingCriteria.CommonOpaque, out var sortingSettings);
+            var drawingSettings = CreateDrawingSettings(_drawingShaderTagIds, SortingCriteria.CommonOpaque, out var sortingSettings);
             var filteringSettings = new FilteringSettings(RenderQueueRange.all);
 
             _context.DrawRenderers(_cullingResult, ref drawingSettings, ref filteringSettings);

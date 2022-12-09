@@ -9,7 +9,8 @@ Shader "Custom/NewSurfaceShader"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        //Tags { "RenderType"="Opaque" }
+        Tags { "RenderType"="MyShaderBlaBlaSurface" }
         LOD 200
 
         CGPROGRAM

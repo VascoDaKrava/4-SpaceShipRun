@@ -6,7 +6,8 @@ Shader "Unlit/NewUnlitShader"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        //Tags { "RenderType"="MyShaderBlaBlaUnlit" }
+        Tags { "MyRenderTag"="MyShaderBlaBlaUnlit" }
         LOD 100
 
         Pass
