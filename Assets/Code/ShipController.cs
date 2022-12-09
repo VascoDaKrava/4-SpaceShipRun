@@ -9,7 +9,7 @@ using System;
 namespace SpaceShipRun.Characters
 {
     [Obsolete]
-    public class ShipController : NetworkMovableObject
+    public sealed class ShipController : NetworkMovableObject
     {
         public string PlayerName
         {

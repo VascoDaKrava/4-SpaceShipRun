@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 namespace SpaceShipRun.UI
 {
     [Obsolete]
-    public class PlayerLabel : MonoBehaviour
+    public sealed class PlayerLabel : MonoBehaviour
     {
         public void DrawLabel(Camera camera)
         {

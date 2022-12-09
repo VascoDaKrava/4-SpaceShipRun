@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 namespace SpaceShipRun.Main
 {
     [Obsolete]
-    public class SolarSystemNetworkManager : NetworkManager
+    public sealed class SolarSystemNetworkManager : NetworkManager
     {
         [SerializeField] private string _playerName;
 

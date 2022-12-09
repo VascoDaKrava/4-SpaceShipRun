@@ -6,7 +6,7 @@ using UnityEngine;
 namespace SpaceShipRun.Mechanics
 {
     [Obsolete]
-    public class PlanetOrbit : NetworkMovableObject
+    public sealed class PlanetOrbit : NetworkMovableObject
     {
         protected override float _speed => _smoothTime;
 
