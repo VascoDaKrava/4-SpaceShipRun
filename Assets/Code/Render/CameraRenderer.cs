@@ -28,7 +28,9 @@ namespace SpaceShipRun.CustomRenderPipeline
         {
             _camera = camera;
             _context = context;
-            //RenderGUI();
+            
+            RenderGUI();
+            
             if (!Cull(out var parameters))
             {
                 return;
