@@ -2,7 +2,14 @@
     "m_SGVersion": 2,
     "m_Type": "UnityEditor.ShaderGraph.GraphData",
     "m_ObjectId": "5eabf0d79b1845b79996a96de7cd7c7a",
-    "m_Properties": [],
+    "m_Properties": [
+        {
+            "m_Id": "ec05af68e40d4ba1aaffdd4eb3c2267b"
+        },
+        {
+            "m_Id": "1078e42a094045d3a5a1e51d49f5128a"
+        }
+    ],
     "m_Keywords": [],
     "m_Nodes": [
         {
@@ -129,6 +136,29 @@
         "m_SerializableColors": []
     },
     "m_SerializedDescriptor": "SurfaceDescription.NormalTS"
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Texture2DShaderProperty",
+    "m_ObjectId": "1078e42a094045d3a5a1e51d49f5128a",
+    "m_Guid": {
+        "m_GuidSerialized": "abc57953-1919-47b5-9fae-13cd3897078c"
+    },
+    "m_Name": "Texture2D (1)",
+    "m_DefaultReferenceName": "Texture2D_1078e42a094045d3a5a1e51d49f5128a",
+    "m_OverrideReferenceName": "",
+    "m_GeneratePropertyBlock": true,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": {
+        "m_SerializedTexture": "{\"texture\":{\"instanceID\":0}}",
+        "m_Guid": ""
+    },
+    "m_Modifiable": true,
+    "m_DefaultType": 0
 }
 
 {
@@ -488,6 +518,29 @@
     },
     "m_Labels": [],
     "m_Space": 0
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Texture2DShaderProperty",
+    "m_ObjectId": "ec05af68e40d4ba1aaffdd4eb3c2267b",
+    "m_Guid": {
+        "m_GuidSerialized": "e305831b-34fd-47e9-a523-b68b42ffc13a"
+    },
+    "m_Name": "Texture2D",
+    "m_DefaultReferenceName": "Texture2D_ec05af68e40d4ba1aaffdd4eb3c2267b",
+    "m_OverrideReferenceName": "",
+    "m_GeneratePropertyBlock": true,
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": {
+        "m_SerializedTexture": "{\"texture\":{\"instanceID\":0}}",
+        "m_Guid": ""
+    },
+    "m_Modifiable": true,
+    "m_DefaultType": 0
 }
 
 {
