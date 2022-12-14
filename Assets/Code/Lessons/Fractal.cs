@@ -1,6 +1,11 @@
 using Unity.Collections;
 using Unity.Jobs;
+using Unity.Mathematics;
 using UnityEngine;
+
+using static Unity.Mathematics.math;
+using float4x4 = Unity.Mathematics.float4x4;
+using quaternion = Unity.Mathematics.quaternion;
 
 
 namespace SpaceShipRun.Performance
@@ -9,13 +14,21 @@ namespace SpaceShipRun.Performance
     {
         private struct FractalPart
         {
-            public Vector3 Direction;
-            public Quaternion Rotation;
-            public Vector3 WorldPosition;
-            public Quaternion WorldRotation;
+            //public Vector3 Direction;
+            public float3 Direction;
+
+            //public Quaternion Rotation;
+            public quaternion Rotation;
+
+            //public Vector3 WorldPosition;
+            public float3 WorldPosition;
+
+            //public Quaternion WorldRotation;
+            public quaternion WorldRotation;
+
             public float SpinAngle;
         }
-                
+
         private struct UpdateFractalLevelJob : IJobFor
         {
             public float SpinAngleDelta;
@@ -32,18 +45,29 @@ namespace SpaceShipRun.Performance
             {
                 var parent = Parents[index / _childCount];
                 var part = Parts[index];
+
                 part.SpinAngle += SpinAngleDelta;
-                part.WorldRotation = parent.WorldRotation * (part.Rotation * Quaternion.Euler(0.0f, part.SpinAngle, 0.0f));
-                part.WorldPosition = parent.WorldPosition + parent.WorldRotation * (_positionOffset * Scale * part.Direction);
+
+                //part.WorldRotation = parent.WorldRotation * (part.Rotation * Quaternion.Euler(0.0f, part.SpinAngle, 0.0f));
+                part.WorldRotation = mul(parent.WorldRotation, mul(part.Rotation, quaternion.RotateY(part.SpinAngle)));
+
+                //part.WorldPosition = parent.WorldPosition + parent.WorldRotation * (_positionOffset * Scale * part.Direction);
+                part.WorldPosition = parent.WorldPosition + mul(parent.WorldPosition, _positionOffset * Scale * part.Direction);
+
                 Parts[index] = part;
-                Matrices[index] = Matrix4x4.TRS(part.WorldPosition, part.WorldRotation, Scale * Vector3.one);
+
+                //Matrices[index] = Matrix4x4.TRS(part.WorldPosition, part.WorldRotation, Scale * Vector3.one);
+                Matrices[index] = float4x4.TRS(part.WorldPosition, part.WorldRotation, float3(Scale));
             }
         }
 
         [SerializeField] private Mesh _mesh;
         [SerializeField] private Material _material;
         [SerializeField, Range(1, 8)] private int _depth = 4;
-        [SerializeField, Range(0, 360)] private int _speedRotation = 80;
+
+        //[SerializeField, Range(0, 360)] private int _speedRotation = 80;
+        [SerializeField, Range(0.0f, 1.0f)] private float _speedRotation = 0.125f;
+
 
         private const float _positionOffset = 1.5f;
         private const float _scaleBias = 0.5f;
@@ -59,22 +83,40 @@ namespace SpaceShipRun.Performance
         private static readonly int _matricesId = Shader.PropertyToID("_Matrices");
         private static MaterialPropertyBlock _propertyBlock;
 
-        private static readonly Vector3[] _directions =
+        //private static readonly Vector3[] _directions =
+        //{
+        //    Vector3.up,
+        //    Vector3.left,
+        //    Vector3.right,
+        //    Vector3.forward,
+        //    Vector3.back
+        //};
+
+        //private static readonly Quaternion[] _rotations =
+        //{
+        //    Quaternion.identity,
+        //    Quaternion.Euler(.0f, .0f, 90.0f),
+        //    Quaternion.Euler(.0f, .0f, -90.0f),
+        //    Quaternion.Euler(90.0f, .0f, .0f),
+        //    Quaternion.Euler(-90.0f, .0f, .0f)
+        //};
+
+        private static readonly float3[] _directions =
         {
-            Vector3.up,
-            Vector3.left,
-            Vector3.right,
-            Vector3.forward,
-            Vector3.back
+            up(),
+            left(),
+            right(),
+            forward(),
+            back()
         };
 
-        private static readonly Quaternion[] _rotations =
+        private static readonly quaternion[] _rotations =
         {
-            Quaternion.identity,
-            Quaternion.Euler(.0f, .0f, 90.0f),
-            Quaternion.Euler(.0f, .0f, -90.0f),
-            Quaternion.Euler(90.0f, .0f, .0f),
-            Quaternion.Euler(-90.0f, .0f, .0f)
+            quaternion.identity,
+            quaternion.RotateZ(0.5f * PI),
+            quaternion.RotateZ(-0.5f * PI),
+            quaternion.RotateX(0.5f * PI),
+            quaternion.RotateX(-0.5f * PI),
         };
 
         private void OnEnable()
@@ -200,7 +242,7 @@ namespace SpaceShipRun.Performance
                     Matrices = _matrices[li]
                 }.Schedule(_parts[li].Length, jobHandle);
             }
-            
+
             jobHandle.Complete();
 
             var bounds = new Bounds(rootPart.WorldPosition, 3f * Vector3.one);
