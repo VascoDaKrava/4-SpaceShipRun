@@ -29,7 +29,7 @@ namespace SpaceShipRun.Performance
             public float SpinAngle;
         }
 
-        private struct UpdateFractalLevelJob : IJobFor
+        private struct UpdateFractalLevelJob : IJobParallelFor
         {
             public float SpinAngleDelta;
             public float Scale;
@@ -192,7 +192,7 @@ namespace SpaceShipRun.Performance
 
         private void Update()
         {
-            var spinAngelDelta = _speedRotation * Time.deltaTime;
+            var spinAngelDelta = _speedRotation * PI * Time.deltaTime;
             var rootPart = _parts[0][0];
             rootPart.SpinAngle += spinAngelDelta;
 
@@ -233,14 +233,17 @@ namespace SpaceShipRun.Performance
             for (var li = 1; li < _parts.Length; li++)
             {
                 scale *= _scaleBias;
-                jobHandle = new UpdateFractalLevelJob
+
+                var job = new UpdateFractalLevelJob
                 {
                     SpinAngleDelta = spinAngelDelta,
                     Scale = scale,
                     Parents = _parts[li - 1],
                     Parts = _parts[li],
                     Matrices = _matrices[li]
-                }.Schedule(_parts[li].Length, jobHandle);
+                };
+
+                jobHandle = job.Schedule(_parts[li].Length, 0, jobHandle);
             }
 
             jobHandle.Complete();
