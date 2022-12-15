@@ -9,6 +9,7 @@ namespace SpaceShipRun.Main
     public sealed class SolarSystemNetworkManager : NetworkManager
     {
         [SerializeField] private string _playerName;
+        [SerializeField][Min(1.0f)] private float asd;
 
         public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
         {
