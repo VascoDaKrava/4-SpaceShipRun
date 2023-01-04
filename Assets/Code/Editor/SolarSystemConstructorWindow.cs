@@ -10,7 +10,7 @@ namespace SpaceShipRun.Main
         private Editor editor;
 
         private int _planetsCount;
-        [SerializeField, NonReorderable] private List<PlanetData> _planets;
+        [SerializeField, NonReorderable] private List<PlanetData> _planets = new List<PlanetData>(0);
 
         private float _asteroidRadius;
         private const float ASTEROID_RADIUS_MAX = 50.0f;
@@ -21,7 +21,8 @@ namespace SpaceShipRun.Main
         [MenuItem("Window/SpaceShipRun/SolarSystemConstructor")]
         public static void ShowWindow()
         {
-            GetWindow(typeof(SolarSystemConstructorWindow), false, "Solar System Constructor");
+            var window = GetWindow(typeof(SolarSystemConstructorWindow), false, "Solar System Constructor");
+            window.minSize = new Vector2 { x = 500, y = 300 };
         }
 
         private void OnGUI()
