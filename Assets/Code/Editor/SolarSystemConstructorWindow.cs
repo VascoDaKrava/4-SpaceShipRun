@@ -1,12 +1,22 @@
+using SpaceShipRun.Abstraction;
+using SpaceShipRun.Mechanics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 namespace SpaceShipRun.Main
 {
     public sealed class SolarSystemConstructorWindow : EditorWindow
     {
+        private Transform _planetContainer;
+        private PlanetOrbit _planetPrefab;
+
+        private Transform _asteroidsContainer;
+        private GameObject _asteroidPrefab;
+
         private Editor editor;
 
         private int _planetsCount;
@@ -33,14 +43,13 @@ namespace SpaceShipRun.Main
             GUILayout.Label("Planet settings", EditorStyles.boldLabel);
             _planetsCount = EditorGUILayout.IntSlider("Planets", _planetsCount, 1, Enum.GetNames(typeof(PlanetNames)).Length);
 
-            if (_planets.Count != _planetsCount)
+            if (_planetsCount > _planets.Count)
             {
-                _planets = new List<PlanetData>(_planetsCount);
-
-                for (int i = 0; i < _planetsCount; i++)
-                {
-                    _planets.Add(new PlanetData { Name = (PlanetNames)i + 1 });
-                }
+                _planets.Add(new PlanetData { Name = (PlanetNames)_planetsCount });
+            }
+            else if (_planetsCount < _planets.Count)
+            {
+                _planets.RemoveRange(_planetsCount, _planets.Count - _planetsCount);
             }
 
             if (!editor)
@@ -55,19 +64,31 @@ namespace SpaceShipRun.Main
 
             GUILayout.Space(EditorGUIUtility.singleLineHeight);
 
+            _planetContainer = EditorGUILayout.ObjectField("Container for Planets", _planetContainer, typeof(Transform), true) as Transform;
+            _planetPrefab = EditorGUILayout.ObjectField("Prefab of Planet", _planetPrefab, typeof(PlanetOrbit), true) as PlanetOrbit;
+
+            GUILayout.Space(EditorGUIUtility.singleLineHeight);
+
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button("Clear Planents", GUILayout.Width(150.0f), GUILayout.Height(30.0f)))
+            if (GUILayout.Button("Get data from scene", GUILayout.Width(150.0f), GUILayout.Height(30.0f)))
             {
-
+                GetPlanetsData();
             }
 
-            GUILayout.Space(100.0f);
+            GUILayout.Space(10.0f);
+
+            if (GUILayout.Button("Remove Planents", GUILayout.Width(150.0f), GUILayout.Height(30.0f)))
+            {
+                ClearPlanets();
+            }
+
+            GUILayout.Space(10.0f);
 
             if (GUILayout.Button("Make Planents", GUILayout.Width(150.0f), GUILayout.Height(30.0f)))
             {
-
+                MakePlanets();
             }
 
             GUILayout.FlexibleSpace();
@@ -106,6 +127,54 @@ namespace SpaceShipRun.Main
 
             #endregion
 
+        }
+
+        private void GetPlanetsData()
+        {
+            List<IPlanetData> planetsList = new List<IPlanetData>(FindObjectsOfType<PlanetOrbit>());
+
+            _planetsCount = planetsList.Count;
+            var planets = new List<PlanetData>(_planetsCount);
+
+            foreach (var item in planetsList)
+            {
+                planets.Add(
+                    new PlanetData
+                    {
+                        Name = item.Name,
+                        OrbitRadius = item.OrbitRadius,
+                        SecondsForFullCircle = item.SecondsForFullCircle
+                    });
+            }
+
+            _planets = new List<PlanetData>(planets.OrderBy(item => item.Name));
+        }
+
+        private void ClearPlanets()
+        {
+            _planets.Clear();
+            _planetsCount = 1;
+
+            var planetsObjects = _planetContainer.childCount;
+
+            for (int i = planetsObjects - 1; i >= 0; i--)
+            {
+                DestroyImmediate(_planetContainer.transform.GetChild(i).gameObject);
+            }
+        }
+
+        private void MakePlanets()
+        {
+            foreach (var item in _planets)
+            {
+                var currentPlanet = Instantiate(_planetPrefab, _planetContainer);
+                currentPlanet.Name = item.Name;
+                currentPlanet.OrbitRadius = item.OrbitRadius;
+                currentPlanet.SecondsForFullCircle = item.SecondsForFullCircle;
+                currentPlanet.name = item.Name.ToString();
+
+                EditorUtility.SetDirty(currentPlanet);
+            }
         }
     }
 }

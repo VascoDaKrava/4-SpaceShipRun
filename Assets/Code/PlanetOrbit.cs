@@ -1,4 +1,6 @@
+using SpaceShipRun.Abstraction;
 using SpaceShipRun.Enums;
+using SpaceShipRun.Main;
 using SpaceShipRun.Network;
 using System;
 using UnityEngine;
@@ -6,9 +8,10 @@ using UnityEngine;
 namespace SpaceShipRun.Mechanics
 {
     [Obsolete]
-    public sealed class PlanetOrbit : NetworkMovableObject
+    public sealed class PlanetOrbit : NetworkMovableObject, IPlanetData
     {
         protected override float _speed => _smoothTime;
+
 
         [SerializeField] private Transform _aroundPoint;
         [SerializeField] private float _smoothTime = 0.3f;
@@ -22,6 +25,20 @@ namespace SpaceShipRun.Mechanics
         private Vector3 _currentPositionSmoothVelocity;
         private float _currentRotationAngle;
         private const float _circleRadians = Mathf.PI * 2.0f;
+
+        [field: SerializeField] public PlanetNames Name { get; set; }
+        public float OrbitRadius
+        {
+            get => gameObject.transform.position.x;
+            set => gameObject.transform.position =
+                new Vector3
+                {
+                    x = value,
+                    y = gameObject.transform.position.y,
+                    z = gameObject.transform.position.z
+                };
+        }
+        public float SecondsForFullCircle { get => _circleInSecond; set => _circleInSecond = value; }
 
         private void Start()
         {
@@ -56,7 +73,7 @@ namespace SpaceShipRun.Mechanics
 
             transform.rotation = Quaternion.AngleAxis(_currentRotationAngle, transform.up);
             _currentAng += _circleRadians * _circleInSecond * Time.deltaTime;
-            
+
             SendToServer();
         }
 
@@ -72,7 +89,7 @@ namespace SpaceShipRun.Mechanics
             {
                 return;
             }
-            
+
             transform.position = Vector3.SmoothDamp(transform.position,
             _serverPosition, ref _currentPositionSmoothVelocity, _speed);
             transform.rotation = Quaternion.Euler(_serverEuler);

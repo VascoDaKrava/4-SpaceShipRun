@@ -8,6 +8,6 @@ namespace SpaceShipRun.Main
     {
         public PlanetNames Name;
         [Range(1.0f, 50.0f)] public float OrbitRadius = 1.0f;
-        [Range(0.1f, 5.0f)] public float FullCirclePerSecond = 1.0f;
+        [Range(0.001f, 1.0f)] public float SecondsForFullCircle = 0.005f;
     }
 }

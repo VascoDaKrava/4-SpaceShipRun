@@ -15,7 +15,7 @@ namespace SpaceShipRun.Main
             // label - UnityEngine.GUIContent
             var planetNameProperty = property.FindPropertyRelative("Name");
             var orbitRadiusProperty = property.FindPropertyRelative("OrbitRadius");
-            var rotationPerSecondProperty = property.FindPropertyRelative("FullCirclePerSecond");
+            var secondsForFullCircle = property.FindPropertyRelative("SecondsForFullCircle");
 
             EditorGUI.BeginProperty(position, label, property);
             EditorGUI.indentLevel = 0;
@@ -30,9 +30,9 @@ namespace SpaceShipRun.Main
             EditorGUI.PropertyField(position, orbitRadiusProperty, GUIContent.none);
 
             position.x += position.width + SPACE;
-            EditorGUI.LabelField(position, rotationPerSecondProperty.displayName);
+            EditorGUI.LabelField(position, secondsForFullCircle.displayName);
             position.x += SPACE * 1.5f;
-            EditorGUI.PropertyField(position, rotationPerSecondProperty, GUIContent.none);
+            EditorGUI.PropertyField(position, secondsForFullCircle, GUIContent.none);
             EditorGUI.EndProperty();
         }
     }
