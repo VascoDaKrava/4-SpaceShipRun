@@ -6,7 +6,7 @@ namespace SpaceShipRun.Main
     [CustomPropertyDrawer(typeof(PlanetData))]
     public class PlanetDataDrawer : PropertyDrawer
     {
-        private const int SPACE = 5;
+        private const int SPACE = 50;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -20,18 +20,18 @@ namespace SpaceShipRun.Main
             EditorGUI.BeginProperty(position, label, property);
             EditorGUI.indentLevel = 0;
 
-            position.width = (position.width - 8 * SPACE) / 5.0f;
+            position.width = (position.width - SPACE) / 5.0f;
             EditorGUI.LabelField(position, planetNameProperty.enumNames[planetNameProperty.enumValueIndex]);
 
-            position.x += position.width + SPACE;
+            position.x += position.width;
             EditorGUI.LabelField(position, orbitRadiusProperty.displayName);
 
-            position.x += position.width + SPACE;
+            position.x += SPACE;
             EditorGUI.PropertyField(position, orbitRadiusProperty, GUIContent.none);
 
-            position.x += position.width + SPACE * 5;
-            EditorGUI.LabelField(position, rotationPerSecondProperty.displayName);
             position.x += position.width + SPACE;
+            EditorGUI.LabelField(position, rotationPerSecondProperty.displayName);
+            position.x += SPACE * 1.5f;
             EditorGUI.PropertyField(position, rotationPerSecondProperty, GUIContent.none);
             EditorGUI.EndProperty();
         }

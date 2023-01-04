@@ -12,6 +12,12 @@ namespace SpaceShipRun.Main
         private int _planetsCount;
         [SerializeField, NonReorderable] private List<PlanetData> _planets;
 
+        private float _asteroidRadius;
+        private const float ASTEROID_RADIUS_MAX = 50.0f;
+
+        private int _asteroidsDensity;
+        private const int ASTEROID_DENSITY_MAX = 10;
+
         [MenuItem("Window/SpaceShipRun/SolarSystemConstructor")]
         public static void ShowWindow()
         {
@@ -20,7 +26,10 @@ namespace SpaceShipRun.Main
 
         private void OnGUI()
         {
-            GUILayout.Label("Settings", EditorStyles.boldLabel);
+
+            #region Planets
+
+            GUILayout.Label("Planet settings", EditorStyles.boldLabel);
             _planetsCount = EditorGUILayout.IntSlider("Planets", _planetsCount, 1, Enum.GetNames(typeof(PlanetNames)).Length);
 
             if (_planets.Count != _planetsCount)
@@ -43,19 +52,59 @@ namespace SpaceShipRun.Main
                 editor.OnInspectorGUI();
             }
 
-            GUILayout.Space(EditorGUIUtility.singleLineHeight * 2);
+            GUILayout.Space(EditorGUIUtility.singleLineHeight);
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Clear Planents"))
+            GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button("Clear Planents", GUILayout.Width(150.0f), GUILayout.Height(30.0f)))
             {
 
             }
 
-            if (GUILayout.Button("Make Planents"))
+            GUILayout.Space(100.0f);
+
+            if (GUILayout.Button("Make Planents", GUILayout.Width(150.0f), GUILayout.Height(30.0f)))
             {
 
             }
+
+            GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
+
+            #endregion
+
+
+            #region Asteroids
+
+            GUILayout.Space(EditorGUIUtility.singleLineHeight * 2);
+
+            GUILayout.Label("Asteroids settings", EditorStyles.boldLabel);
+            _asteroidRadius = EditorGUILayout.Slider("Asteroid ring radius", _asteroidRadius, 1.0f, ASTEROID_RADIUS_MAX);
+            _asteroidsDensity = EditorGUILayout.IntSlider("Density of asteroids", _asteroidsDensity, 1, ASTEROID_DENSITY_MAX);
+
+            GUILayout.Space(EditorGUIUtility.singleLineHeight);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button("Clear Asteroids", GUILayout.Width(150.0f), GUILayout.Height(30.0f)))
+            {
+
+            }
+
+            GUILayout.Space(100.0f);
+
+            if (GUILayout.Button("Make Asteroids", GUILayout.Width(150.0f), GUILayout.Height(30.0f)))
+            {
+
+            }
+
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            #endregion
+
         }
     }
 }
