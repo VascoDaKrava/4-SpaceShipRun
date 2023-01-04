@@ -18,10 +18,11 @@ namespace SpaceShipRun.CustomRenderPipeline
             new List<ShaderTagId> {
                 new ShaderTagId("SRPDefaultUnlit"),
                 //new ShaderTagId("SRPDefaultLit"),
-                //new ShaderTagId("SRPDefaultLit"),
                 //new ShaderTagId("URPDefaultLit"),
                 //new ShaderTagId("PlanetShader"),
                 //new ShaderTagId("MyShaderBlaBlaUnlit"),
+                //new ShaderTagId("MyShaderBlaBlaSurface"),
+                //new ShaderTagId("NewUnlitShader"),
             };
 
         public void Render(ScriptableRenderContext context, Camera camera)
