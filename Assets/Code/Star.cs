@@ -1,10 +1,8 @@
-using UnityEngine;
-
+using SpaceShipRun.Main;
 
 namespace SpaceShipRun.Pickup
 {
-    public sealed class Star : MonoBehaviour
+    public sealed class Star : CollisionObject
     {
-        
     }
 }
