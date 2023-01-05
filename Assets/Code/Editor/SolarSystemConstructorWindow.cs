@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 namespace SpaceShipRun.Main
 {
@@ -81,7 +80,7 @@ namespace SpaceShipRun.Main
 
             if (GUILayout.Button("Remove Planents", GUILayout.Width(150.0f), GUILayout.Height(30.0f)))
             {
-                ClearPlanets();
+                ClearListAndChildren(ref _planets, ref _planetsCount, _planetContainer);
             }
 
             GUILayout.Space(10.0f);
@@ -150,16 +149,16 @@ namespace SpaceShipRun.Main
             _planets = new List<PlanetData>(planets.OrderBy(item => item.Name));
         }
 
-        private void ClearPlanets()
+        private void ClearListAndChildren<T>(ref List<T> list, ref int count, Transform container)
         {
-            _planets.Clear();
-            _planetsCount = 1;
+            list.Clear();
+            count = 1;
 
-            var planetsObjects = _planetContainer.childCount;
+            var childrenObjects = container.childCount;
 
-            for (int i = planetsObjects - 1; i >= 0; i--)
+            for (int i = childrenObjects - 1; i >= 0; i--)
             {
-                DestroyImmediate(_planetContainer.transform.GetChild(i).gameObject);
+                DestroyImmediate(container.transform.GetChild(i).gameObject);
             }
         }
 
