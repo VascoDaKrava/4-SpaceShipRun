@@ -5,27 +5,33 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace SpaceShipRun.Main
 {
+    [Obsolete]
     public sealed class SolarSystemConstructorWindow : EditorWindow
     {
         private Transform _planetContainer;
         private PlanetOrbit _planetPrefab;
-
-        private Transform _asteroidsContainer;
-        private GameObject _asteroidPrefab;
 
         private Editor editor;
 
         private int _planetsCount;
         [SerializeField, NonReorderable] private List<PlanetData> _planets = new List<PlanetData>(0);
 
+        private Transform _asteroidsContainer;
+        private CollisionObject _asteroidPrefab;
+
+        private Vector2 _asteroidScaleRange;
+        private const float ASTEROID_SCALE_MIN = 0.1f;
+        private const float ASTEROID_SCALE_MAX = 2.0f;
+
         private float _asteroidRadius;
         private const float ASTEROID_RADIUS_MAX = 50.0f;
 
-        private int _asteroidsDensity;
-        private const int ASTEROID_DENSITY_MAX = 10;
+        private int _asteroidsCount;
+        private const int ASTEROID_COUNT_MAX = 1000;
 
         [MenuItem("Window/SpaceShipRun/SolarSystemConstructor")]
         public static void ShowWindow()
@@ -102,7 +108,14 @@ namespace SpaceShipRun.Main
 
             GUILayout.Label("Asteroids settings", EditorStyles.boldLabel);
             _asteroidRadius = EditorGUILayout.Slider("Asteroid ring radius", _asteroidRadius, 1.0f, ASTEROID_RADIUS_MAX);
-            _asteroidsDensity = EditorGUILayout.IntSlider("Density of asteroids", _asteroidsDensity, 1, ASTEROID_DENSITY_MAX);
+            _asteroidsCount = EditorGUILayout.IntSlider("Quantity of asteroids", _asteroidsCount, 1, ASTEROID_COUNT_MAX);
+            EditorGUILayout.MinMaxSlider("Asteroid scale", ref _asteroidScaleRange.x, ref _asteroidScaleRange.y, ASTEROID_SCALE_MIN, ASTEROID_SCALE_MAX);
+            GUILayout.Label($"{_asteroidScaleRange}");
+
+            GUILayout.Space(EditorGUIUtility.singleLineHeight);
+
+            _asteroidsContainer = EditorGUILayout.ObjectField("Container for Asteroids", _asteroidsContainer, typeof(Transform), true) as Transform;
+            _asteroidPrefab = EditorGUILayout.ObjectField("Asteroid prefab", _asteroidPrefab, typeof(CollisionObject), false) as CollisionObject;
 
             GUILayout.Space(EditorGUIUtility.singleLineHeight);
 
@@ -111,14 +124,14 @@ namespace SpaceShipRun.Main
 
             if (GUILayout.Button("Clear Asteroids", GUILayout.Width(150.0f), GUILayout.Height(30.0f)))
             {
-
+                ClearListAndChildren(_asteroidsContainer);
             }
 
             GUILayout.Space(100.0f);
 
             if (GUILayout.Button("Make Asteroids", GUILayout.Width(150.0f), GUILayout.Height(30.0f)))
             {
-
+                MakeAsteroids();
             }
 
             GUILayout.FlexibleSpace();
@@ -149,17 +162,22 @@ namespace SpaceShipRun.Main
             _planets = new List<PlanetData>(planets.OrderBy(item => item.Name));
         }
 
-        private void ClearListAndChildren<T>(ref List<T> list, ref int count, Transform container)
+        private void ClearListAndChildren(Transform container)
         {
-            list.Clear();
-            count = 1;
-
             var childrenObjects = container.childCount;
 
             for (int i = childrenObjects - 1; i >= 0; i--)
             {
                 DestroyImmediate(container.transform.GetChild(i).gameObject);
             }
+        }
+
+        private void ClearListAndChildren<T>(ref List<T> list, ref int count, Transform container)
+        {
+            list.Clear();
+            count = 1;
+
+            ClearListAndChildren(container);
         }
 
         private void MakePlanets()
@@ -174,6 +192,22 @@ namespace SpaceShipRun.Main
 
                 EditorUtility.SetDirty(currentPlanet);
             }
+        }
+
+        private void MakeAsteroids()
+        {
+            for (int i = 0; i < _asteroidsCount; i++)
+            {
+                var alfa = Random.Range(0, 2 * Mathf.PI);
+                var x = _asteroidRadius * Mathf.Sin(alfa);
+                var y = _asteroidRadius * Mathf.Cos(alfa);
+
+                var scale = Random.Range(_asteroidScaleRange.x, _asteroidScaleRange.y);
+
+                Instantiate(_asteroidPrefab, new Vector3 { x = x, y = 0.0f, z = y }, Random.rotation, _asteroidsContainer).transform.localScale = Vector3.one * scale;
+            }
+
+            EditorUtility.SetDirty(_asteroidPrefab);
         }
     }
 }
